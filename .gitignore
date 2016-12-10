@@ -1,0 +1,4 @@
+tests/id_rsa
+tests/terraform.tfstate
+tests/terraform.tfstate.backup
+tests/test.retry
