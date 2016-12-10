@@ -20,6 +20,6 @@ install:
 - sudo mv terraform /usr/bin/terraform
 - pip install ansible
 script:
-- terraform apply
+- cd tests && terraform apply
 after_script:
-- terraform destroy --force
+- cd tests && terraform destroy --force
