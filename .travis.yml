@@ -24,3 +24,5 @@ script:
 - cd tests && terraform apply
 after_script:
 - terraform destroy --force
+notifications:
+    webhooks: https://galaxy.ansible.com/api/v1/notifications/
