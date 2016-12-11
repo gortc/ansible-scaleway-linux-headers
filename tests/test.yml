@@ -2,10 +2,6 @@
 - hosts: all
   remote_user: root
   vars:
-    scaleway_apt_cache_valid_time: 0
-  tasks:
-    - name: "Wait for SSH to be available"
-      wait_for:
-      port: 22
+    scaleway_update_cache: yes
   roles:
     - ansible-scaleway-linux-headers
