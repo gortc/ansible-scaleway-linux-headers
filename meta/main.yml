@@ -11,7 +11,7 @@ galaxy_info:
       - wily
       - trusty
       - precise
-  tags:
+  galaxy_tags:
    - scaleway
    - dependencies
 dependencies: []
