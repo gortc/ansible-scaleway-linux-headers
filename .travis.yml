@@ -24,4 +24,4 @@ install:
 script:
 - cd tests && terraform apply
 after_script:
-- cd tests && terraform destroy --force
+- terraform destroy --force
