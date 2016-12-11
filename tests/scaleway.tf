@@ -19,6 +19,9 @@ resource "scaleway_server" "ansible_test_server" {
 resource "scaleway_ip" "base" {
   server = "${scaleway_server.ansible_test_server.id}"
   provisioner "local-exec" {
+    command = "ansible all -m wait_for -a 'port=22' -i '${self.ip},' -u root"
+  }
+  provisioner "local-exec" {
     command = "ansible-playbook -i '${self.ip},' test.yml -u root"
   }
 }
