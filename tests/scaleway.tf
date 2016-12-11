@@ -19,6 +19,6 @@ resource "scaleway_server" "ansible_test_server" {
 resource "scaleway_ip" "base" {
   server = "${scaleway_server.ansible_test_server.id}"
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${self.ip},' test.yml -u root --private-key=id_rsa"
+    command = "ansible-playbook -i '${self.ip},' test.yml -u root"
   }
 }
