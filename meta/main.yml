@@ -8,6 +8,9 @@ galaxy_info:
    - name: Ubuntu
      versions:
       - xenial
+      - wily
+      - trusty
+      - precise
   tags:
    - scaleway
    - dependencies
