@@ -1,3 +1,8 @@
+- name: "Set kernel facts"
+  set_fact:
+    scaleway_upstream_kernel: "{{ansible_kernel|regex_replace('-.*$', '')}}"
+    scaleway_local_kernel: "{{ansible_kernel|regex_replace('^[^-]+', '')}}"
+
 - name: "Create a home for the kernel sources"
   become: yes
   file:
@@ -7,8 +12,8 @@
 - name: "Download the upstream kernel source"
   become: yes
   unarchive:
-    src: "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{ansible_kernel|regex_replace('-.*$', '')}}.tar.xz"
-    creates: "/usr/src/linux-{{ansible_kernel|regex_replace('-.*$', '')}}"
+    src: "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{scaleway_upstream_kernel}}.tar.xz"
+    creates: "/usr/src/linux-{{scaleway_upstream_kernel}}"
     dest: "/usr/src/"
     remote_src: yes
 
@@ -16,7 +21,7 @@
   become: yes
   file:
     state: "link"
-    src: "/usr/src/linux-{{ansible_kernel|regex_replace('-.*$', '')}}"
+    src: "/usr/src/linux-{{scaleway_upstream_kernel}}"
     dest: "/usr/src/linux"
   with_items:
     - "/usr/src/linux"
@@ -34,7 +39,7 @@
     dest: "/usr/src/linux/.config"
     line: "{{item}}"
   with_items:
-    - "CONFIG_LOCALVERSION=\"{{ansible_kernel|regex_replace('^[^-]+', '')}}\""
+    - "CONFIG_LOCALVERSION=\"{{scaleway_local_kernel}}\""
     - "CONFIG_CROSS_COMPILE=\"\""
 
 - name: "Download module symvers"
