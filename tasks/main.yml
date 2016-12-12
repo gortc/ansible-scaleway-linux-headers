@@ -22,7 +22,7 @@
   file:
     state: "link"
     src: "/usr/src/linux-{{scaleway_upstream_kernel}}"
-    dest: "/usr/src/linux"
+    dest: "{{item}}"
   with_items:
     - "/usr/src/linux"
     - "/lib/modules/{{ansible_kernel}}/build"
