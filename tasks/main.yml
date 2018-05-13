@@ -1,39 +1,39 @@
-- name: "Set kernel facts"
+- name: set kernel facts
   set_fact:
     scaleway_upstream_kernel: "{{ansible_kernel|regex_replace('-.*$', '')}}"
     scaleway_local_kernel: "{{ansible_kernel|regex_replace('^[^-]+', '')}}"
 
-- name: "Create a home for the kernel sources"
+- name: create a home for the kernel sources
   become: yes
   file:
-    path: "/usr/src"
-    state: "directory"
+    path: /usr/src
+    state: directory
 
-- name: "Download the upstream kernel source"
+- name: download the upstream kernel source
   become: yes
   unarchive:
-    src: "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{scaleway_upstream_kernel}}.tar.xz"
-    creates: "/usr/src/linux-{{scaleway_upstream_kernel}}"
-    dest: "/usr/src/"
+    src: https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{scaleway_upstream_kernel}}.tar.xz
+    creates: /usr/src/linux-{{scaleway_upstream_kernel}}
+    dest: /usr/src/
     remote_src: yes
 
-- name: "Symlink kernel sources"
+- name: symlink kernel sources
   become: yes
   file:
-    state: "link"
+    state: link
     src: "/usr/src/linux-{{scaleway_upstream_kernel}}"
     dest: "{{item}}"
   with_items:
-    - "/usr/src/linux"
-    - "/lib/modules/{{ansible_kernel}}/build"
+    - /usr/src/linux
+    - /lib/modules/{{ansible_kernel}}/build
 
-- name: "Unpack the local config"
+- name: unpack the local config
   become: yes
   shell: "zcat /proc/config.gz > /usr/src/linux/.config"
   args:
     creates: "/usr/src/linux/.config"
 
-- name: "Set build config"
+- name: set build config
   become: yes
   lineinfile:
     dest: "/usr/src/linux/.config"
@@ -42,27 +42,26 @@
     - "CONFIG_LOCALVERSION=\"{{scaleway_local_kernel}}\""
     - "CONFIG_CROSS_COMPILE=\"\""
 
-- name: "Download module symvers"
+- name: download module symvers
   become: yes
-  fetch:
-    src: "http://mirror.scaleway.com/kernel/{{ansible_architecture}}/{{ansible_kernel}}/Module.symvers"
+  get_url:
+    url: "http://mirror.scaleway.com/kernel/{{ansible_architecture}}/{{ansible_kernel}}/Module.symvers"
     dest: "/usr/src/linux/Module.symvers"
-    flat: yes
 
-- name: "Install packages necessary for kernel compilation"
+- name: install packages necessary for kernel compilation
   become: yes
   apt:
     name: "{{item}}"
     update_cache: "{{scaleway_update_cache}}"
   with_items:
-    - "build-essential"
-    - "libssl-dev"
+    - build-essential
+    - libssl-dev
 
-- name: "Prepare sources"
+- name: prepare sources
   become: yes
   make:
     chdir: "/usr/src/linux"
     target: "{{item}}"
   with_items:
-    - "prepare"
-    - "modules_prepare"
+    - prepare
+    - modules_prepare
