@@ -57,6 +57,7 @@
     - build-essential
     - libssl-dev
 
+# TODO: do not run everytime
 - name: prepare sources
   become: yes
   make:
